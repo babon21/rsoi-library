@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializers import AuthorSerializer, BookSerializer
+from .serializers import AuthorSerializer, SaveBookSerializer, GetBookSerializer
 from .models import Book
 
 
@@ -17,10 +17,10 @@ def create_author(request):
 
 @api_view(['POST'])
 def create_book(request):
-    serializer = BookSerializer(data=request.data)
+    serializer = SaveBookSerializer(data=request.data)
     if serializer.is_valid():
         book = serializer.save()
-        serializer = BookSerializer(book)
+        serializer = SaveBookSerializer(book)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -33,7 +33,7 @@ def get_or_delete_book(request, book_id):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = BookSerializer(book)
+        serializer = GetBookSerializer(book)
         return Response(serializer.data)
 
     elif request.method == 'DELETE':

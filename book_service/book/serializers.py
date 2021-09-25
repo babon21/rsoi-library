@@ -8,8 +8,14 @@ class AuthorSerializer(serializers.ModelSerializer):
         fields = ['id', 'firstname', 'lastname']
 
 
-class BookSerializer(serializers.ModelSerializer):
+class GetBookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ['id', 'name', 'genre', 'author']
         depth = 1
+
+
+class SaveBookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ['id', 'name', 'genre', 'author']
