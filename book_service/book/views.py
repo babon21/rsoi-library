@@ -2,11 +2,14 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .serializers import AuthorSerializer, SaveBookSerializer, GetBookSerializer
-from .models import Book
+from .models import Book, Author
 
 
-@api_view(['POST'])
-def create_author(request):
+@api_view(['GET', 'POST'])
+def create_author_or_get_list(request):
+    if request.method == 'GET':
+        serializer = AuthorSerializer(Author.objects.all(), many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     serializer = AuthorSerializer(data=request.data)
     if serializer.is_valid():
         author = serializer.save()
