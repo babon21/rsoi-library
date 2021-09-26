@@ -18,8 +18,11 @@ def create_author_or_get_list(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
-def create_book(request):
+@api_view(['GET', 'POST'])
+def create_book_or_get_list(request):
+    if request.method == 'GET':
+        serializer = GetBookSerializer(Book.objects.all(), many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     serializer = SaveBookSerializer(data=request.data)
     if serializer.is_valid():
         book = serializer.save()
