@@ -78,13 +78,21 @@ WSGI_APPLICATION = 'book_service.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',
-        # 'HOST': 'ec2-34-254-24-116.eu-west-1.compute.amazonaws.com',
+        'NAME': 'd4vrm2oiavjigq',
+        'USER': 'zmkpnbeylrshqa',
+        'PASSWORD': '9b28a4ece87c276574e833666325ccb393f185733b3f71808029d270b6c952c4',
+        'HOST': 'ec2-44-198-204-136.compute-1.amazonaws.com',
         'PORT': '5432'
-    }
+    },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'postgres',
+    #     'USER': 'admin',
+    #     'PASSWORD': 'admin',
+    #     'HOST': 'localhost',
+    #     # 'HOST': 'ec2-34-254-24-116.eu-west-1.compute.amazonaws.com',
+    #     'PORT': '5432'
+    # }
 }
 
 
