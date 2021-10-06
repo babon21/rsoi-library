@@ -45,3 +45,16 @@ def get_or_delete_book(request, book_id):
     elif request.method == 'DELETE':
         book.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+def search_by_book_name(request, book_name):
+    books = Book.objects.filter(name__contains=book_name).all()
+    serializer = GetBookSerializer(Book.objects.filter(name__contains=book_name), many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def search_by_author(request, author):
+    serializer = GetBookSerializer(Book.objects.filter(author__lastname__contains=author).all(), many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
