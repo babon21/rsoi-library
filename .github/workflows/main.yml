@@ -1,24 +1,141 @@
-name: Build project
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+#name: Build project
+#on:
+#  push:
+#    branches:
+#      - master
+#  pull_request:
+#    branches:
+#      - master
+#jobs:
+#  build:
+#    name: Build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      # TODO Build projects
+#      # TODO deploy
+#      # - name: Run API Tests
+#      #  id: run-newman
+#      #  uses: anthonyvscode/newman-action@v1
+#      #  with:
+#      #    collection: postman/postman-collection.json
+#      #    environment: postman/postman-heroku-environment.json
+#      #    delayRequest: 50
+#      #    reporters: cli
+
+name: Micro services
+
+on: [ push ]
+
+
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 7
+      matrix:
+        python-version: [ 3.9 ]
     steps:
-      - uses: actions/checkout@v2
-      # TODO Build projects
-      # TODO deploy
-      # - name: Run API Tests
-      #  id: run-newman
-      #  uses: anthonyvscode/newman-action@v1
-      #  with:
-      #    collection: postman/postman-collection.json
-      #    environment: postman/postman-heroku-environment.json
-      #    delayRequest: 50
-      #    reporters: cli
+    - uses: actions/checkout@v2
+    - run: |
+        git fetch --prune --unshallow
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install dj-database-url
+        pip install -r book_service/requirements.txt
+
+    - name: Migrate Booking
+      run: |
+        cd book_service/
+        python3 manage.py migrate
+    - name: Deploy book service
+      uses: akhileshns/heroku-deploy@v3.4.6
+      with:
+        heroku_api_key: 83110493-1184-42cc-afaa-bb84585f7583
+        heroku_app_name: darzhain-book
+        heroku_email: dimad_1996@mail.ru
+        appdir: book_service
+#
+#
+#    - name: Migrate Gateway
+#      run: |
+#        cd Gateway_Service/
+#        python3 manage.py migrate
+#    - name: Deploy Gateway Service
+#      uses: akhileshns/heroku-deploy@v3.4.6
+#      with:
+#        heroku_api_key: 9bb8f29a-3dab-4878-86a3-33ab7960a1cb
+#        heroku_app_name: hotels-gateway-chernov
+#        heroku_email: Chernov-Ivan.1997@yandex.ru
+#        appdir: Gateway_Service
+#
+#
+#    - name: Migrate Hotel
+#      run: |
+#        cd Hotel_Service/
+#        python3 manage.py migrate
+#    - name: Deploy Hotel service
+#      uses: akhileshns/heroku-deploy@v3.4.6
+#      with:
+#        heroku_api_key: 9bb8f29a-3dab-4878-86a3-33ab7960a1cb
+#        heroku_app_name: hotels-hotel-chernov
+#        heroku_email: Chernov-Ivan.1997@yandex.ru
+#        appdir: Hotel_Service
+#
+#
+#    - name: Migrate Loyalty
+#      run: |
+#        cd Loyalty_Service/
+#        python3 manage.py migrate
+#    - name: Deploy Loyalty service
+#      uses: akhileshns/heroku-deploy@v3.4.6
+#      with:
+#        heroku_api_key: 9bb8f29a-3dab-4878-86a3-33ab7960a1cb
+#        heroku_app_name: hotels-loyalty-chernov
+#        heroku_email: Chernov-Ivan.1997@yandex.ru
+#        appdir: Loyalty_Service
+
+
+#    - name: Migrate Payment
+#      run: |
+#        cd Payment_Service/
+#        python3 manage.py migrate
+#    - name: Deploy Payment service
+#      uses: akhileshns/heroku-deploy@v3.4.6
+#      with:
+#        heroku_api_key: 9bb8f29a-3dab-4878-86a3-33ab7960a1cb
+#        heroku_app_name: hotels-payment-chernov
+#        heroku_email: Chernov-Ivan.1997@yandex.ru
+#        appdir: Payment_Service
+#
+#
+#    - name: Migrate Report
+#      run: |
+#        cd Report_Service/
+#        python3 manage.py migrate
+#    - name: Deploy Report service
+#      uses: akhileshns/heroku-deploy@v3.4.6
+#      with:
+#        heroku_api_key: 9bb8f29a-3dab-4878-86a3-33ab7960a1cb
+#        heroku_app_name: hotels-report-chernov
+#        heroku_email: Chernov-Ivan.1997@yandex.ru
+#        appdir: Report_Service
+#
+#
+#    - name: Migrate Session
+#      run: |
+#        cd Session_Service/
+#        python3 manage.py migrate
+#    - name: Deploy Session service
+#      uses: akhileshns/heroku-deploy@v3.4.6
+#      with:
+#        heroku_api_key: 9bb8f29a-3dab-4878-86a3-33ab7960a1cb
+#        heroku_app_name: hotels-session-chernov
+#        heroku_email: Chernov-Ivan.1997@yandex.ru
+#        appdir: Session_Service
