@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="col-8 mt-3">
+        <div class="text-center">
+            <h3 style="font-weight: bold">{{ title }}</h3>
+        </div>
+        {% if genres %}
+            {% for genre in genres %}
+                {% if genre.count != 0 %}
+                    <div class="font my-4 p-2">
+                        <p style="padding-left: 30px;">Genre: {{ genre.genre }}</p>
+                        <p style="padding-left: 30px;">Count: {{ genre.count }}</p>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}
+

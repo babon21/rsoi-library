@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="col-8 mt-3">
+        <div class="text-center">
+            <h3 style="font-weight: bold">{{ title }}</h3>
+        </div>
+        {% if users %}
+            {% for user in users %}
+                {% if users.count != 0 %}
+                    <div class="font my-4 p-2">
+                        <p style="padding-left: 30px;">Genre: {{ user.user_id }}</p>
+                        <p style="padding-left: 30px;">taken_count: {{ user.taken_count }}</p>
+                        <p style="padding-left: 30px;">expired_count: {{ user.expired_count }}</p>
+                        <p style="padding-left: 30px;">in_time: {{ user.in_time }}</p>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}
+

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{#    {% if request.COOKIES.jwt %}#}
+{#        {% if user.role == 'admin' %}#}
+
+            <div class="col-8 mt-3">
+                <div class="text-center">
+                    <h3 style="font-weight: bold">{{ title }}</h3>
+                </div>
+            {% if libraries %}
+                {% for library in libraries %}
+                    <div class = "font my-4 p-2">
+                        <a href={% url 'books' library.id %}>
+                            <h3 style="padding-top: 10px; padding-left: 30px;">{{library.city}}</h3>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            </div>
+
+{#        {% endif %}#}
+{#    {% endif %}#}
+{% endblock %}

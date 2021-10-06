@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="font my-4 p-3">
+        <p class="mr-3 h2 text-center">Поиск по названию книги</p>
+        <form action="{% url 'search_by_book_name' %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="book_name" id="book_name" class="form-control bg-light" required/><br>
+            <input type="submit" class="btn btn-outline-secondary btn-block" value="Search">
+        </form>
+    </div>
+    <div class="font my-4 p-3">
+        <p class="mr-3 h2 text-center">Поиск по фамилии автора</p>
+        <form action="{% url 'search_by_author' %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="author" id="author" class="form-control bg-light" required/><br>
+            <input type="submit" class="btn btn-outline-secondary btn-block" value="Search">
+        </form>
+    </div>
+{% endblock %}
+

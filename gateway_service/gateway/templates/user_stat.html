@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="col-8 mt-3">
+        <div class="text-center">
+            <h3 style="font-weight: bold">{{ title }}</h3>
+        </div>
+        {% if rating %}
+            <div class="font my-4 p-2">
+                <p style="padding-left: 30px;">Рейтинг: {{ rating.rating }}</p>
+            </div>
+        {% endif %}
+        {% if control.current_count %}
+            <div class="font my-4 p-2">
+                <p style="padding-left: 30px;">Количество взятых книг: {{ control.current_count }}</p>
+            </div>
+        {% endif %}
+        {% if control.max_count %}
+            <div class="font my-4 p-2">
+                <p style="padding-left: 30px;">Максимальное количество книг: {{ control.max_count }}</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
