@@ -11,7 +11,8 @@ from report_service.settings import JWT_KEY
 from .models import GenreStat, UserStat
 from .serializers import GenreStatSerializer, UserStatSerializer
 
-BOOK_URL = "127.0.0.1:9002/api/v1/book"
+# BOOK_URL = "127.0.0.1:9002/api/v1/book"
+BOOK_URL = "https://darzhain-book.herokuapp.com/api/v1/book"
 
 
 def auth(request):
