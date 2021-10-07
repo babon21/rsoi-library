@@ -77,10 +77,6 @@ jobs:
         appdir: control_service
 
 
-    - name: Migrate Gateway
-      run: |
-        cd gateway_service/
-        python3 manage.py migrate
     - name: Deploy gateway service
       uses: akhileshns/heroku-deploy@v3.4.6
       with:
