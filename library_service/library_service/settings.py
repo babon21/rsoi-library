@@ -26,7 +26,7 @@ JWT_KEY = 'django-insecure-i34kh^k3dzoidfffgfym^87@_%o6otr7t00g=(z+-)md%^3%uj'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.herokuapp.com']
 
 
 # Application definition
@@ -79,13 +79,21 @@ WSGI_APPLICATION = 'library_service.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',
-        # 'HOST': 'ec2-34-254-24-116.eu-west-1.compute.amazonaws.com',
+        'NAME': 'd2dhpe0nh6ovbn',
+        'USER': 'ltyywvorxzxczb',
+        'PASSWORD': 'f9e5948f622ce73fceec453dd8c1ea1ea09d7787d4526cd14d52dd160671e33c',
+        'HOST': 'ec2-44-198-196-149.compute-1.amazonaws.com',
         'PORT': '5432'
-    }
+    },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'postgres',
+    #     'USER': 'admin',
+    #     'PASSWORD': 'admin',
+    #     'HOST': 'localhost',
+    #     # 'HOST': 'ec2-34-254-24-116.eu-west-1.compute.amazonaws.com',
+    #     'PORT': '5432'
+    # }
 }
 
 

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-i34kh^k3dzoidfffgfym^87@_%o6otr7t00g=(z+-)md%^3%uj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.herokuapp.com']
 
 
 # Application definition
@@ -78,13 +78,21 @@ WSGI_APPLICATION = 'session_service.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',
-        # 'HOST': 'ec2-34-254-24-116.eu-west-1.compute.amazonaws.com',
-        'PORT': '5431'
-    }
+        'NAME': 'd9nraknc9rvf81',
+        'USER': 'dptdomhpxdeawa',
+        'PASSWORD': '30ae5ee1d4a10e2b7af3601e5572f8dc2dafc8fbaa6b3d9dd1dfce91456604b0',
+        'HOST': 'ec2-34-199-15-136.compute-1.amazonaws.com',
+        'PORT': '5432'
+    },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'postgres',
+    #     'USER': 'admin',
+    #     'PASSWORD': 'admin',
+    #     'HOST': 'localhost',
+    #     # 'HOST': 'ec2-34-254-24-116.eu-west-1.compute.amazonaws.com',
+    #     'PORT': '5431'
+    # },
 }
 
 

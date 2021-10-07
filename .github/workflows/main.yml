@@ -63,6 +63,79 @@ jobs:
         heroku_app_name: darzhain-book
         heroku_email: dimad_1996@mail.ru
         appdir: book_service
+
+    - name: Migrate Control
+      run: |
+        cd control_service/
+        python3 manage.py migrate
+    - name: Deploy control service
+      uses: akhileshns/heroku-deploy@v3.4.6
+      with:
+        heroku_api_key: 83110493-1184-42cc-afaa-bb84585f7583
+        heroku_app_name: darzhain-control
+        heroku_email: dimad_1996@mail.ru
+        appdir: control_service
+
+
+    - name: Migrate Gateway
+      run: |
+        cd gateway_service/
+        python3 manage.py migrate
+    - name: Deploy gateway service
+      uses: akhileshns/heroku-deploy@v3.4.6
+      with:
+        heroku_api_key: 83110493-1184-42cc-afaa-bb84585f7583
+        heroku_app_name: darzhain-gateway
+        heroku_email: dimad_1996@mail.ru
+        appdir: gateway_service
+
+    - name: Migrate Library
+      run: |
+        cd library_service/
+        python3 manage.py migrate
+    - name: Deploy library service
+      uses: akhileshns/heroku-deploy@v3.4.6
+      with:
+        heroku_api_key: 83110493-1184-42cc-afaa-bb84585f7583
+        heroku_app_name: darzhain-library
+        heroku_email: dimad_1996@mail.ru
+        appdir: library_service
+
+    - name: Migrate Rating
+      run: |
+        cd rating_service/
+        python3 manage.py migrate
+    - name: Deploy rating service
+      uses: akhileshns/heroku-deploy@v3.4.6
+      with:
+        heroku_api_key: 83110493-1184-42cc-afaa-bb84585f7583
+        heroku_app_name: darzhain-rating
+        heroku_email: dimad_1996@mail.ru
+        appdir: rating_service
+
+    - name: Migrate Report
+      run: |
+        cd report_service/
+        python3 manage.py migrate
+    - name: Deploy report service
+      uses: akhileshns/heroku-deploy@v3.4.6
+      with:
+        heroku_api_key: 83110493-1184-42cc-afaa-bb84585f7583
+        heroku_app_name: darzhain-report
+        heroku_email: dimad_1996@mail.ru
+        appdir: report_service
+
+    - name: Migrate Session
+      run: |
+        cd session_service/
+        python3 manage.py migrate
+    - name: Deploy session service
+      uses: akhileshns/heroku-deploy@v3.4.6
+      with:
+        heroku_api_key: 83110493-1184-42cc-afaa-bb84585f7583
+        heroku_app_name: darzhain-session
+        heroku_email: dimad_1996@mail.ru
+        appdir: session_service
 #
 #
 #    - name: Migrate Gateway

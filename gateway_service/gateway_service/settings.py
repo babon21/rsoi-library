@@ -26,7 +26,7 @@ JWT_KEY = 'django-insecure-i34kh^k3dzoidfffgfym^87@_%o6otr7t00g=(z+-)md%^3%uj'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.herokuapp.com']
 
 
 # Application definition
