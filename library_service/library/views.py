@@ -30,11 +30,11 @@ tz_MOS = pytz.timezone('Europe/Moscow')
 
 def cookies(request):
     is_authenticated = False
-    session = requests.get(f"http://{SESSION_URL}/validate", cookies=request.COOKIES)
+    session = requests.get(f"{SESSION_URL}/validate", cookies=request.COOKIES)
     if session.status_code != 200:
         pass
         # if session.status_code == 403:
-        #     session = requests.get("http://localhost:8001/api/v1/session/refresh", cookies=request.COOKIES)
+        #     session = requests.get("localhost:8001/api/v1/session/refresh", cookies=request.COOKIES)
         #     is_authenticated = True
         # elif session.status_code == 401:
         #     pass
@@ -111,7 +111,7 @@ def get_books(request, library_id):
 
     book_infos = []
     for book in books:
-        service_response = requests.get(f"http://{BOOK_URL}/api/v1/book/{book['book_id']}")
+        service_response = requests.get(f"{BOOK_URL}/api/v1/book/{book['book_id']}")
         if service_response.status_code == status.HTTP_404_NOT_FOUND:
             continue
         book_info = service_response.json()
@@ -123,7 +123,7 @@ def get_books(request, library_id):
 
 @api_view(['POST'])
 def take_book(request, library_id, book_id):
-    book_info = requests.post(f"http://{REPORT_URL}/user/take", cookies=request.COOKIES)
+    book_info = requests.post(f"{REPORT_URL}/user/take", cookies=request.COOKIES)
     # todo check code
 
     # find LibraryBook then check count
@@ -138,7 +138,7 @@ def take_book(request, library_id, book_id):
         return Response(status=status.HTTP_200_OK)
         # return response что нет книг(
 
-    control_response = requests.post(f"http://{CONTROL_URL}/take", cookies=request.COOKIES)
+    control_response = requests.post(f"{CONTROL_URL}/take", cookies=request.COOKIES)
 
 
     taken_book = TakenBook()
@@ -182,17 +182,17 @@ def return_book(request, library_id, book_id):
     try:
         taken_book = TakenBook.objects.get(book_id=book_id, user_id=data['user_id'])
         now = datetime.datetime.now(tz_MOS)
-        control_response = requests.post(f"http://{CONTROL_URL}/return", cookies=request.COOKIES)
+        control_response = requests.post(f"{CONTROL_URL}/return", cookies=request.COOKIES)
 
         if taken_book.expire_date > now:
-            rating_response = requests.post(f"http://{RATING_URL}/up", cookies=request.COOKIES)
-            control_response = requests.post(f"http://{CONTROL_URL}/up", cookies=request.COOKIES)
+            rating_response = requests.post(f"{RATING_URL}/up", cookies=request.COOKIES)
+            control_response = requests.post(f"{CONTROL_URL}/up", cookies=request.COOKIES)
 
-            report_response = requests.post(f"http://{REPORT_URL}/user/in_time", cookies=request.COOKIES)
+            report_response = requests.post(f"{REPORT_URL}/user/in_time", cookies=request.COOKIES)
         else:
-            rating_response = requests.post(f"http://{RATING_URL}/down", cookies=request.COOKIES)
+            rating_response = requests.post(f"{RATING_URL}/down", cookies=request.COOKIES)
 
-            report_response = requests.post(f"http://{REPORT_URL}/user/expire", cookies=request.COOKIES)
+            report_response = requests.post(f"{REPORT_URL}/user/expire", cookies=request.COOKIES)
         taken_book.delete()
     except LibraryBook.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -213,7 +213,7 @@ def get_taken_books(request):
     books = list(TakenBook.objects.filter(user_id=user_id).values('book_id'))
     book_infos = []
     for book in books:
-        service_response = requests.get(f"http://{BOOK_URL}/api/v1/book/{book['book_id']}")
+        service_response = requests.get(f"{BOOK_URL}/api/v1/book/{book['book_id']}")
         if service_response.status_code == status.HTTP_404_NOT_FOUND:
             continue
         book_info = service_response.json()
@@ -222,13 +222,13 @@ def get_taken_books(request):
     # books = list(LibraryBook.objects.filter(library_id=library_id).values_list('book_id', flat=True))
     # book_infos = []
     # for book_id in books:
-    #     book = requests.get(f"http://{BOOK_URL}/api/v1/book/{book_id}").json()
+    #     book = requests.get(f"{BOOK_URL}/api/v1/book/{book_id}").json()
     #     book_infos.append(book)
 
     # books = list(LibraryBook.objects.filter(library_id=library_id).values('book_id', 'count'))
     # book_infos = []
     # for book in books:
-    #     book_info = requests.get(f"http://{BOOK_URL}/api/v1/book/{book['book_id']}").json()
+    #     book_info = requests.get(f"{BOOK_URL}/api/v1/book/{book['book_id']}").json()
     #     book_info['count'] = book['count']
     #     book_infos.append(book)
     # return Response(book_infos)

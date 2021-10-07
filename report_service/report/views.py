@@ -29,7 +29,7 @@ def auth(request):
 
 @api_view(['POST'])
 def update_stat(request, book_id):
-    response = requests.get(f"http://{BOOK_URL}/{book_id}")
+    response = requests.get(f"{BOOK_URL}/{book_id}")
     book = response.json()
     genre = book['genre']
 

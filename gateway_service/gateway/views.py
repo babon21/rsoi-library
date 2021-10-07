@@ -28,7 +28,7 @@ CONTROL_URL = "https://darzhain-control.herokuapp.com/api/v1/control"
 
 def cookies(request):
     is_authenticated = False
-    session = requests.get(f"http://{SESSION_URL}/validate", cookies=request.COOKIES)
+    session = requests.get(f"{SESSION_URL}/validate", cookies=request.COOKIES)
     if session.status_code != 200:
         pass
         # if session.status_code == 403:
@@ -69,7 +69,7 @@ def signup(request):
             return render(request, 'signup.html', {'form': form, 'error': 'Password mismatch'})
         # if not re.compile("^([A-Za-z0-9]+)+$").match(form.data['username']):
         #     return render(request, 'signup.html', {'form': form, 'error': 'No valid login'})
-        session = requests.post(f'http://{SESSION_URL}/signup',
+        session = requests.post(f'{SESSION_URL}/signup',
                                 json={"username": form.data['username'],
                                       "password": form.data['password'],
                                       "library_id": form.data['library']
@@ -88,7 +88,7 @@ def make_login(request):
         form = LoginForm()
     if request.method == "POST":
         form = LoginForm(data=request.POST)
-        session = requests.post(f'http://{SESSION_URL}/login',
+        session = requests.post(f'{SESSION_URL}/login',
                                 json={"username": request.POST.get('username'),
                                       "password": request.POST.get('password')})
         if session.status_code == 200:
@@ -102,7 +102,7 @@ def make_login(request):
 
 
 def make_logout(request):
-    session = requests.post(f"http://{SESSION_URL}/logout", cookies=request.COOKIES)
+    session = requests.post(f"{SESSION_URL}/logout", cookies=request.COOKIES)
     if session.status_code == 200:
         response = HttpResponseRedirect('/index')
         response.delete_cookie('jwt')
@@ -111,7 +111,7 @@ def make_logout(request):
 
 
 def get_libraries_response(request, data):
-    libraries = requests.get(f"http://{LIBRARY_URL}/").json()
+    libraries = requests.get(f"{LIBRARY_URL}/").json()
     if len(libraries) != 0:
         title = "Библиотеки в городах"
         response = render(request, 'libraries.html', {'libraries': libraries, 'title': title,
@@ -141,10 +141,10 @@ def index(request):
 def library_books(request, library_id):
     is_authenticated, request, session = cookies(request)
     data = auth(request)
-    books = requests.get(f"http://{LIBRARY_URL}/{library_id}/books", cookies=request.COOKIES).json()
-    library = requests.get(f"http://{LIBRARY_URL}/{library_id}", cookies=request.COOKIES).json()
+    books = requests.get(f"{LIBRARY_URL}/{library_id}/books", cookies=request.COOKIES).json()
+    library = requests.get(f"{LIBRARY_URL}/{library_id}", cookies=request.COOKIES).json()
 
-    control = requests.get(f"http://{CONTROL_URL}/get", cookies=request.COOKIES).json()
+    control = requests.get(f"{CONTROL_URL}/get", cookies=request.COOKIES).json()
     if control['current_count'] < control['max_count']:
         action = 'take'
     else:
@@ -189,7 +189,7 @@ def add_library_admin(request):
         form = NewLibrary()
     if request.method == "POST":
         form = NewLibrary(data=request.POST)
-        new_library = requests.post(f"http://{LIBRARY_URL}/",
+        new_library = requests.post(f"{LIBRARY_URL}/",
                                     json={'city': form.data['city']},
                                     cookies=request.COOKIES)
         error = 'success'
@@ -204,7 +204,7 @@ def add_library_admin(request):
 
 
 def get_authors_for_form():
-    authors = requests.get(f"http://{BOOK_URL}/author")
+    authors = requests.get(f"{BOOK_URL}/author")
     form_list = []
     for author in authors.json():
         form_list.append((author['id'], f"{author['firstname']} {author['lastname']}"))
@@ -223,7 +223,7 @@ def add_book_admin(request):
         form = NewBook(data=request.POST)
         form.fields['author'].choices = get_authors_for_form()
 
-        new_book = requests.post(f"http://{BOOK_URL}/",
+        new_book = requests.post(f"{BOOK_URL}/",
                                  json={'name': form.data['name'],
                                        'genre': form.data['genre'],
                                        'author': form.data['author']},
@@ -239,7 +239,7 @@ def add_book_admin(request):
 
 
 def get_books_for_form():
-    books = requests.get(f"http://{BOOK_URL}/")
+    books = requests.get(f"{BOOK_URL}/")
     form_list = []
     for book in books.json():
         form_list.append((book['id'], f"{book['name']} ({book['author']['firstname']} {book['author']['lastname']})"))
@@ -247,7 +247,7 @@ def get_books_for_form():
 
 
 def get_libraries_for_form():
-    libraries = requests.get(f"http://{LIBRARY_URL}/")
+    libraries = requests.get(f"{LIBRARY_URL}/")
     form_list = []
     for library in libraries.json():
         form_list.append((library['id'], f"{library['city']}"))
@@ -272,7 +272,7 @@ def add_library_book(request):
         form.fields['library'].choices = get_libraries_for_form()
 
         new_book = requests.post(
-            f"http://{LIBRARY_URL}/{form.data['library']}/book/{form.data['book']}",
+            f"{LIBRARY_URL}/{form.data['library']}/book/{form.data['book']}",
             cookies=request.COOKIES)
         error = 'success'
         if new_book.status_code != status.HTTP_201_CREATED:
@@ -298,7 +298,7 @@ def delete_book(request):
         form = DeleteBook(data=request.POST)
 
         service_response = requests.delete(
-            f"http://{BOOK_URL}/{form.data['book']}",
+            f"{BOOK_URL}/{form.data['book']}",
             cookies=request.COOKIES)
         error = 'success'
         # if service_response.status_code != status.HTTP_204_NO_CONTENT:
@@ -315,7 +315,7 @@ def delete_book(request):
 def take_book(request, library_id, book_id):
     is_authenticated, request, session = cookies(request)
     data = auth(request)
-    take_response = requests.post(f"http://{LIBRARY_URL}/{library_id}/book/{book_id}/take",
+    take_response = requests.post(f"{LIBRARY_URL}/{library_id}/book/{book_id}/take",
                                   cookies=request.COOKIES)
 
     # todo check response status code
@@ -325,7 +325,7 @@ def take_book(request, library_id, book_id):
     return response
 
     # продумать как сделать кнопку вместо взять, уже взята, надо ходить по taken_book from library
-    books = requests.get(f"http://{LIBRARY_URL}/{library_id}/books").json()
+    books = requests.get(f"{LIBRARY_URL}/{library_id}/books").json()
     if len(books) != 0:
         title = "Книги"
         response = render(request, 'library_books.html',
@@ -344,7 +344,7 @@ def user_books(request):
     data = auth(request)
     library_id = data['library_id']
     # todo поменять запрос на получение списка взятых книг
-    books = requests.get(f"http://{LIBRARY_URL}/taked_books", cookies=request.COOKIES).json()
+    books = requests.get(f"{LIBRARY_URL}/taked_books", cookies=request.COOKIES).json()
     # library = requests.get(f"http://{LIBRARY_URL}/{library_id}").json()
 
     if len(books) != 0:
@@ -368,7 +368,7 @@ def return_book(request, book_id):
     is_authenticated, request, session = cookies(request)
     data = auth(request)
     library_id = data['library_id']
-    take_response = requests.post(f"http://{LIBRARY_URL}/{library_id}/book/{book_id}/return",
+    take_response = requests.post(f"{LIBRARY_URL}/{library_id}/book/{book_id}/return",
                                   cookies=request.COOKIES)
 
     # todo check response status code
@@ -381,7 +381,7 @@ def return_book(request, book_id):
 def genre_stat(request):
     is_authenticated, request, session = cookies(request)
     data = auth(request)
-    report_response = requests.get(f"http://{REPORT_URL}/genre_stat",
+    report_response = requests.get(f"{REPORT_URL}/genre_stat",
                                    cookies=request.COOKIES)
 
     # todo check response status code
@@ -393,7 +393,7 @@ def genre_stat(request):
 def user_stat(request):
     is_authenticated, request, session = cookies(request)
     data = auth(request)
-    report_response = requests.get(f"http://{REPORT_URL}/user_stat",
+    report_response = requests.get(f"{REPORT_URL}/user_stat",
                                    cookies=request.COOKIES)
 
 
@@ -405,7 +405,7 @@ def user_stat(request):
 def delete_library_book(request, library_id, book_id):
     is_authenticated, request, session = cookies(request)
     data = auth(request)
-    service_response = requests.delete(f"http://{LIBRARY_URL}/{library_id}/book/{book_id}",
+    service_response = requests.delete(f"{LIBRARY_URL}/{library_id}/book/{book_id}",
                                        cookies=request.COOKIES)
 
     # todo check response status code
@@ -418,9 +418,9 @@ def delete_library_book(request, library_id, book_id):
 def user_rating(request):
     is_authenticated, request, session = cookies(request)
     data = auth(request)
-    rating_response = requests.get(f"http://{RATING_URL}/",
+    rating_response = requests.get(f"{RATING_URL}/",
                                    cookies=request.COOKIES)
-    control_response = requests.get(f"http://{CONTROL_URL}/get",
+    control_response = requests.get(f"{CONTROL_URL}/get",
                                     cookies=request.COOKIES)
 
     # todo check response status code
@@ -443,7 +443,7 @@ def search_by_book_name(request):
     data = auth(request)
     form_data = request.POST
 
-    book_response = requests.get(f"http://{BOOK_URL}/search_by_book_name/{form_data['book_name']}",
+    book_response = requests.get(f"{BOOK_URL}/search_by_book_name/{form_data['book_name']}",
                                  cookies=request.COOKIES)
     # response = requests.get(f"http://{RATING_URL}/", cookies=request.COOKIES)
 
@@ -457,7 +457,7 @@ def search_by_author(request):
     data = auth(request)
     form_data = request.POST
 
-    book_response = requests.get(f"http://{BOOK_URL}/search_by_author/{form_data['author']}",
+    book_response = requests.get(f"{BOOK_URL}/search_by_author/{form_data['author']}",
                                  cookies=request.COOKIES)
 
     # todo check response status code
