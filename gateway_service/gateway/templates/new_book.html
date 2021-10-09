@@ -20,7 +20,7 @@
                 <td>
                     <div style="margin: 10px;">
                         {% if error == 'success' %}
-                            <div class="alert alert-success"> Added </div>
+                            <div class="alert alert-success"> Added</div>
                         {% elif error %}
                             <div class="alert alert-danger">{{ error }}</div>
                         {% endif %}
@@ -35,11 +35,15 @@
                                     </div>
                                 {% endfor %}
                             </fieldset>
-                            <div class="flex-box my-4 ">
-                                <button type="submit" class="btn btn-success">
-                                    Save
-                                </button>
-                            </div>
+                            {% if error == None or error == 'success' %}
+
+                                <div class="flex-box my-4 ">
+                                    <button type="submit" class="btn btn-success">
+                                        Save
+                                    </button>
+                                </div>
+                            {% endif %}
+
                         </form>
                     </div>
                 <td>

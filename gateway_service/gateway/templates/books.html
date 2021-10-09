@@ -6,6 +6,9 @@
         <div class="text-center">
             <h3 style="font-weight: bold">{{ title }}</h3>
         </div>
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
         {% if books %}
             {% for book in books %}
                 {% if book.count != 0 %}

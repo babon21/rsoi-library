@@ -7,7 +7,6 @@ from rest_framework import status
 
 from .forms import LoginForm, UserRegistrationForm, NewLibrary, NewBook, NewLibraryBook, DeleteBook
 import requests
-import re
 
 from gateway_service.settings import JWT_KEY
 
@@ -141,14 +140,27 @@ def index(request):
 def library_books(request, library_id):
     is_authenticated, request, session = cookies(request)
     data = auth(request)
-    books = requests.get(f"{LIBRARY_URL}/{library_id}/books", cookies=request.COOKIES).json()
-    library = requests.get(f"{LIBRARY_URL}/{library_id}", cookies=request.COOKIES).json()
+    books_response = requests.get(f"{LIBRARY_URL}/{library_id}/books", cookies=request.COOKIES)
+    if books_response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR:
+        response = render(request, 'library_books.html',
+                          {
+                              'title': BOOKS_ARE_TEMPORARILY_UNAVAILABLE,
+                              'user': data,
+                          })
+        response.set_cookie(key='jwt', value=session.cookies.get('jwt'), httponly=True) \
+            if is_authenticated else response.delete_cookie('jwt')
+        return response
 
-    control = requests.get(f"{CONTROL_URL}/get", cookies=request.COOKIES).json()
-    if control['current_count'] < control['max_count']:
-        action = 'take'
-    else:
-        action = 'no'
+    books = books_response.json()
+    library_response = requests.get(f"{LIBRARY_URL}/{library_id}", cookies=request.COOKIES)
+    library = library_response.json()
+
+    if data is not None:
+        control = requests.get(f"{CONTROL_URL}/get", cookies=request.COOKIES).json()
+        if control['current_count'] < control['max_count']:
+            action = 'take'
+        else:
+            action = 'no'
 
     if len(books) != 0:
         response = render(request, 'library_books.html',
@@ -204,8 +216,12 @@ def add_library_admin(request):
 
 
 def get_authors_for_form():
-    authors = requests.get(f"{BOOK_URL}/author")
     form_list = []
+
+    try:
+        authors = requests.get(f"{BOOK_URL}/author")
+    except requests.exceptions.ConnectionError:
+        return form_list, False
     for author in authors.json():
         form_list.append((author['id'], f"{author['firstname']} {author['lastname']}"))
     return form_list
@@ -218,7 +234,13 @@ def add_book_admin(request):
 
     if request.method == "GET":
         form = NewBook()
-        form.fields['author'].choices = get_authors_for_form()
+        form.fields['author'].choices, success = get_authors_for_form()
+        if not success:
+            response = render(request, 'new_book.html', {'error': THE_OPERATION_IS_TEMPORARILY_UNAVAILABLE, 'user': data})
+
+            response.set_cookie(key='jwt', value=session.cookies.get('jwt'), httponly=True) \
+                if is_authenticated else response.delete_cookie('jwt')
+            return response
     if request.method == "POST":
         form = NewBook(data=request.POST)
         form.fields['author'].choices = get_authors_for_form()
@@ -239,19 +261,37 @@ def add_book_admin(request):
 
 
 def get_books_for_form():
-    books = requests.get(f"{BOOK_URL}/")
     form_list = []
+
+    try:
+        books = requests.get(f"{BOOK_URL}/")
+    except requests.exceptions.ConnectionError:
+        return form_list, False
+    success = True
+    if books.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR:
+        success = False
+
+    if not success:
+        return form_list, success
+
     for book in books.json():
         form_list.append((book['id'], f"{book['name']} ({book['author']['firstname']} {book['author']['lastname']})"))
-    return form_list
+    return form_list, success
 
 
 def get_libraries_for_form():
     libraries = requests.get(f"{LIBRARY_URL}/")
+    success = True
+    if libraries.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR:
+        success = False
+
     form_list = []
+
+    if not success:
+        return form_list, success
     for library in libraries.json():
         form_list.append((library['id'], f"{library['city']}"))
-    return form_list
+    return form_list, success
 
 
 def add_library_book(request):
@@ -262,8 +302,13 @@ def add_library_book(request):
     if request.method == "GET":
         form = NewLibraryBook()
 
-        form.fields['book'].choices = get_books_for_form()
-        form.fields['library'].choices = get_libraries_for_form()
+        form.fields['book'].choices, success_book = get_books_for_form()
+        form.fields['library'].choices, success_lib = get_libraries_for_form()
+        if not success_book or not success_lib:
+            response = render(request, 'add_library_book.html', {'error': THE_OPERATION_IS_TEMPORARILY_UNAVAILABLE, 'user': data})
+            response.set_cookie(key='jwt', value=session.cookies.get('jwt'), httponly=True) \
+                if is_authenticated else response.delete_cookie('jwt')
+            return response
 
     if request.method == "POST":
         form = NewLibraryBook(data=request.POST)
@@ -292,7 +337,12 @@ def delete_book(request):
     if request.method == "GET":
         form = DeleteBook()
 
-        form.fields['book'].choices = get_books_for_form()
+        form.fields['book'].choices, success = get_books_for_form()
+        if not success:
+            response = render(request, 'delete_book.html', {'error': THE_OPERATION_IS_TEMPORARILY_UNAVAILABLE, 'user': data})
+            response.set_cookie(key='jwt', value=session.cookies.get('jwt'), httponly=True) \
+                if is_authenticated else response.delete_cookie('jwt')
+            return response
 
     if request.method == "POST":
         form = DeleteBook(data=request.POST)
@@ -396,7 +446,6 @@ def user_stat(request):
     report_response = requests.get(f"{REPORT_URL}/user_stat",
                                    cookies=request.COOKIES)
 
-
     # todo check response status code
     response = render(request, 'user_stat.html', {'users': report_response.json(), 'user': data})
     return response
@@ -432,8 +481,6 @@ def user_rating(request):
 def search(request):
     is_authenticated, request, session = cookies(request)
     data = auth(request)
-
-    # todo check response status code
     response = render(request, 'search.html', {'user': data})
     return response
 
@@ -442,12 +489,12 @@ def search_by_book_name(request):
     is_authenticated, request, session = cookies(request)
     data = auth(request)
     form_data = request.POST
-
-    book_response = requests.get(f"{BOOK_URL}/search_by_book_name/{form_data['book_name']}",
+    try:
+        book_response = requests.get(f"{BOOK_URL}/search_by_book_name/{form_data['book_name']}",
                                  cookies=request.COOKIES)
-    # response = requests.get(f"http://{RATING_URL}/", cookies=request.COOKIES)
-
-    # todo check response status code
+    except requests.exceptions.ConnectionError:
+        response = render(request, 'books.html', {'error': THE_OPERATION_IS_TEMPORARILY_UNAVAILABLE, 'user': data})
+        return response
     response = render(request, 'books.html', {'books': book_response.json(), 'user': data})
     return response
 
@@ -457,9 +504,11 @@ def search_by_author(request):
     data = auth(request)
     form_data = request.POST
 
-    book_response = requests.get(f"{BOOK_URL}/search_by_author/{form_data['author']}",
+    try:
+        book_response = requests.get(f"{BOOK_URL}/search_by_author/{form_data['author']}",
                                  cookies=request.COOKIES)
-
-    # todo check response status code
+    except requests.exceptions.ConnectionError:
+        response = render(request, 'books.html', {'error': THE_OPERATION_IS_TEMPORARILY_UNAVAILABLE, 'user': data})
+        return response
     response = render(request, 'books.html', {'books': book_response.json(), 'user': data})
     return response

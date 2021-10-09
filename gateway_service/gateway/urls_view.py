@@ -12,11 +12,6 @@ urlpatterns = [
     path('signup', signup, name="signup"),
     path('library/<int:library_id>/books', library_books, name="books"),
     path('admin', admin, name="admin"),
-    path('add_library', add_library_admin, name="add_library"),
-    path('add_book', add_book_admin, name="add_book"),
-    path('add_library_book', add_library_book, name="add_book_to_library"),
-    path('delete_library_book/<int:library_id>/<int:book_id>', delete_library_book, name="delete_library_book"),
-    path('delete_book', delete_book, name="delete_book"),
     path('take_book/<int:library_id>/<int:book_id>', take_book, name="take_book"),
     path('user_books/', user_books, name="user_books"),
     path('return_book/<int:book_id>', return_book, name="return_book"),
@@ -26,4 +21,11 @@ urlpatterns = [
     path('search/', search, name="search"),
     path('search_by_book_name/', search_by_book_name, name="search_by_book_name"),
     path('search_by_author/', search_by_author, name="search_by_author"),
+
+    # admin operation
+    path('add_library', add_library_admin, name="add_library"),
+    path('add_book', add_book_admin, name="add_book"),
+    path('add_library_book', add_library_book, name="add_book_to_library"),
+    path('delete_library_book/<int:library_id>/<int:book_id>', delete_library_book, name="delete_library_book"),
+    path('delete_book', delete_book, name="delete_book"),
 ]
