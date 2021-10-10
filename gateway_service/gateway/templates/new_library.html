@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    New library
+    Создать библиотеку
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@
             <thead>
             <tr>
                 <th style="border-color: white;" colspan="3">
-                    <h3 style="text-align: center">New library</h3>
+                    <h3 style="text-align: center">Создать библиотеку</h3>
                 </th>
             </tr>
             </thead>
@@ -20,7 +20,7 @@
                 <td>
                     <div style="margin: 10px;">
                         {% if error == 'success' %}
-                            <div class="alert alert-success"> Added </div>
+                            <div class="alert alert-success"> Успешно </div>
                         {% elif error %}
                             <div class="alert alert-danger">{{ error }}</div>
                         {% endif %}
@@ -37,7 +37,7 @@
                             </fieldset>
                             <div class="flex-box my-4 ">
                                 <button type="submit" class="btn btn-success">
-                                    Save
+                                    Создать
                                 </button>
                             </div>
                         </form>

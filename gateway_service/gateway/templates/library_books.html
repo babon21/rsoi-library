@@ -10,12 +10,12 @@
             {% for book in books %}
                 {% if book.count != 0 %}
                     <div class="font my-4 p-2">
-                        <p style="padding-left: 30px;">Id: {{ book.id }}</p>
-                        <p style="padding-left: 30px;">Name: {{ book.name }}</p>
-                        <p style="padding-left: 30px;">Genre: {{ book.genre }}</p>
-                        <p style="padding-left: 30px;">Author id: {{ book.author.id }}</p>
-                        <p style="padding-left: 30px;">Author firstname: {{ book.author.firstname }}</p>
-                        <p style="padding-left: 30px;">Author lastname: {{ book.author.lastname }}</p>
+{#                        <p style="padding-left: 30px;">Id: {{ book.id }}</p>#}
+                        <p style="padding-left: 30px;">Название: {{ book.name }}</p>
+                        <p style="padding-left: 30px;">Жанр: {{ book.genre }}</p>
+{#                        <p style="padding-left: 30px;">Author id: {{ book.author.id }}</p>#}
+                        <p style="padding-left: 30px;">Автор: {{ book.author.firstname }} {{ book.author.lastname }}</p>
+{#                        <p style="padding-left: 30px;">Author lastname: </p>#}
 
                         {% if request.COOKIES.jwt %}
                             {% if user.role == 'user' %}
@@ -44,7 +44,7 @@
                             {% endif %}
 
                             {% if user.role == 'admin' %}
-                                <p style="padding-left: 30px;">Count: {{ book.count }}</p>
+                                <p style="padding-left: 30px;">Количество: {{ book.count }}</p>
 
                                 <div class="col-3 mr-4 ml-auto">
                                     <a href="{% url 'delete_library_book' library_id book.id %}" role="button"

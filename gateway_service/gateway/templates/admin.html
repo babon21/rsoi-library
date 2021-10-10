@@ -8,7 +8,7 @@
 {% block content %}
     <div class="container">
         <div class="my-4">
-            <h3 class="text-center text-wrap text-break" style="font-weight: bold;">Welcome Admin's</h3>
+            <h3 class="text-center text-wrap text-break" style="font-weight: bold;">Добро пожаловать в Админку</h3>
         </div>
         <div>
             <div class="three-col-grid" style="padding-bottom: 550px;">
@@ -19,23 +19,17 @@
                     <a href="{% url 'genre_stat' %}" role="button" class="btn btn-outline-success btn-lg" style="width: 220px;">Статистика по жанрам</a>
                 </div>
                 <div class="grid-item text-center">
-                    <a href="{% url 'add_library' %}" role="button" class="btn btn-outline-success btn-lg" style="width: 220px;">Add library</a>
+                    <a href="{% url 'add_library' %}" role="button" class="btn btn-outline-success btn-lg" style="width: 220px;">Добавить библиотеку</a>
                 </div>
                 <div class="grid-item text-center">
-                    <a href="{% url 'add_book' %}" role="button" class="btn btn-outline-danger btn-lg" style="width: 220px;">Add book</a>
+                    <a href="{% url 'add_book' %}" role="button" class="btn btn-outline-danger btn-lg" style="width: 220px;">Добавить книгу</a>
                 </div>
                 <div class="grid-item text-center">
-                    <a href="{% url 'add_book_to_library' %}" role="button" class="btn btn-outline-primary btn-lg" style="width: 220px;">Add book to library</a>
+                    <a href="{% url 'add_book_to_library' %}" role="button" class="btn btn-outline-primary btn-lg" style="width: 220px;">Добавить книгу в библиотеку</a>
                 </div>
                 <div class="grid-item text-center">
                     <a href="{% url 'delete_book' %}" role="button" class="btn btn-outline-primary btn-lg" style="width: 220px;">Удалить книгу</a>
                 </div>
-{#                <div class="grid-item text-center">#}
-{#                    <a href="{% url 'users_static' %}" role="button" class="btn btn-outline-secondary btn-lg" style="width: 220px;">Static login users</a>#}
-{#                </div>#}
-{#                <div class="grid-item text-center">#}
-{#                    <a href="{% url 'static_booking' %}" role="button" class="btn btn-outline-secondary btn-lg" style="width: 220px;">Static booking users</a>#}
-{#                </div>#}
             </div>
         </div>
     </div>

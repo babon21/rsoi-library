@@ -19,8 +19,8 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container col-md-7">
             <a class="navbar-brand" title="Все вопросы" href="{% url 'index' %}" style="font-size: 24px;">
-                <img class="py-2 px-1" src="https://img.icons8.com/officel/30/000000/share.png" alt="Аватар"> Top
-                Library
+                <img class="py-2 px-1" src="https://img.icons8.com/officel/30/000000/share.png" alt="Аватар">
+                Электронная библиотека
             </a>
         </div>
 
@@ -28,7 +28,7 @@
             {% if request.COOKIES.jwt %}
                 {% if user.role == 'admin' %}
                     <div class="col-3 mr-4 ml-auto">
-                        <a href="{% url 'admin' %}" role="button" class="btn btn-outline-dark">Admin</a>
+                        <a href="{% url 'admin' %}" role="button" class="btn btn-outline-dark">Админка</a>
                     </div>
                 {% endif %}
                 {% if user.role == 'user' %}
@@ -36,7 +36,7 @@
                         <a href="{% url 'user_books' %}" role="button" class="btn btn-outline-dark">Мои книги</a>
                     </div>
                     <div class="col-3 mr-4 ml-auto">
-                        <a href="{% url 'rating' %}" role="button" class="btn btn-outline-dark">Мои рейтинг</a>
+                        <a href="{% url 'rating' %}" role="button" class="btn btn-outline-dark">Мои профиль</a>
                     </div>
                     <div class="col-3 mr-4 ml-auto">
                         <a href="{% url 'search' %}" role="button" class="btn btn-outline-dark">Поиск</a>
@@ -48,15 +48,15 @@
                 <div class="row">
                     {% if request.COOKIES.jwt %}
                         <div class="col mr-4 col-np">
-                            <a href="{% url 'logout' %}">Logout</a>
+                            <a href="{% url 'logout' %}">Выйти</a>
                         </div>
                     {% else %}
                         <div class="col mr-2 col-np">
-                            <a href="{% url 'login' %}">Log in</a>
+                            <a href="{% url 'login' %}">Войти</a>
                         </div>
 
                         <div class="col mr-2 col-np">
-                            <a href="{% url 'signup' %}">Register</a>
+                            <a href="{% url 'signup' %}">Зарегистрироваться</a>
                         </div>
                     {% endif %}
                 </div>
