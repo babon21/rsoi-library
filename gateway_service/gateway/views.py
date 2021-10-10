@@ -481,7 +481,7 @@ def user_rating(request):
                                     cookies=request.COOKIES)
 
     # todo check response status code
-    response = render(request, 'user_stat.html', {'rating': rating_response.json(), 'user': data,
+    response = render(request, 'user_rating.html', {'rating': rating_response.json(), 'user': data,
                                                   'control': control_response.json()})
     return response
 
