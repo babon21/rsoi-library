@@ -15,8 +15,7 @@ urlpatterns = [
     path('take_book/<int:library_id>/<int:book_id>', take_book, name="take_book"),
     path('user_books/', user_books, name="user_books"),
     path('return_book/<int:book_id>', return_book, name="return_book"),
-    path('genre_stat/', genre_stat, name="genre_stat"),
-    path('user_stat/', user_stat, name="user_stat"),
+
     path('rating/', user_rating, name="rating"),
     path('search/', search, name="search"),
     path('search_by_book_name/', search_by_book_name, name="search_by_book_name"),
@@ -28,4 +27,6 @@ urlpatterns = [
     path('add_library_book', add_library_book, name="add_book_to_library"),
     path('delete_library_book/<int:library_id>/<int:book_id>', delete_library_book, name="delete_library_book"),
     path('delete_book', delete_book, name="delete_book"),
+    path('genre_stat/', genre_stat, name="genre_stat"),
+    path('user_stat/', user_stat, name="user_stat"),
 ]

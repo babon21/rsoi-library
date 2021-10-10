@@ -17,12 +17,10 @@ from gateway_service.settings import JWT_KEY
 # RATING_URL = "http://127.0.0.1:9005/api/v1/rating"
 # CONTROL_URL = "http://127.0.0.1:9006/api/v1/control"
 
-LIBRARY_URL = "https://darzhain-library.herokuapp.com/api/v1/library"
-BOOK_URL = "https://darzhain-book.herokuapp.com/api/v1/book"
-SESSION_URL = "https://darzhain-session.herokuapp.com/api/v1/session"
-REPORT_URL = "https://darzhain-report.herokuapp.com/api/v1/report"
-RATING_URL = "https://darzhain-rating.herokuapp.com/api/v1/rating"
-CONTROL_URL = "https://darzhain-control.herokuapp.com/api/v1/control"
+
+
+BOOKS_ARE_TEMPORARILY_UNAVAILABLE = 'Книги временно недоступны'
+THE_OPERATION_IS_TEMPORARILY_UNAVAILABLE = 'Операция временно недоступна'
 
 
 def cookies(request):
@@ -57,11 +55,11 @@ def auth(request):
 def signup(request):
     error = None
     form = UserRegistrationForm()
-    form.fields['library'].choices = get_libraries_for_form()
+    form.fields['library'].choices, d = get_libraries_for_form()
 
     if request.method == "POST":
         form = UserRegistrationForm(request.POST)
-        form.fields['library'].choices = get_libraries_for_form()
+        form.fields['library'].choices, g = get_libraries_for_form()
 
         # validation
         if form.data['password'] != form.data['password2']:
@@ -155,12 +153,11 @@ def library_books(request, library_id):
     library_response = requests.get(f"{LIBRARY_URL}/{library_id}", cookies=request.COOKIES)
     library = library_response.json()
 
+    action = 'no'
     if data is not None:
         control = requests.get(f"{CONTROL_URL}/get", cookies=request.COOKIES).json()
         if control['current_count'] < control['max_count']:
             action = 'take'
-        else:
-            action = 'no'
 
     if len(books) != 0:
         response = render(request, 'library_books.html',
@@ -224,7 +221,7 @@ def get_authors_for_form():
         return form_list, False
     for author in authors.json():
         form_list.append((author['id'], f"{author['firstname']} {author['lastname']}"))
-    return form_list
+    return form_list, True
 
 
 def add_book_admin(request):
@@ -236,14 +233,15 @@ def add_book_admin(request):
         form = NewBook()
         form.fields['author'].choices, success = get_authors_for_form()
         if not success:
-            response = render(request, 'new_book.html', {'error': THE_OPERATION_IS_TEMPORARILY_UNAVAILABLE, 'user': data})
+            response = render(request, 'new_book.html',
+                              {'error': THE_OPERATION_IS_TEMPORARILY_UNAVAILABLE, 'user': data})
 
             response.set_cookie(key='jwt', value=session.cookies.get('jwt'), httponly=True) \
                 if is_authenticated else response.delete_cookie('jwt')
             return response
     if request.method == "POST":
         form = NewBook(data=request.POST)
-        form.fields['author'].choices = get_authors_for_form()
+        form.fields['author'].choices, s = get_authors_for_form()
 
         new_book = requests.post(f"{BOOK_URL}/",
                                  json={'name': form.data['name'],
@@ -305,7 +303,8 @@ def add_library_book(request):
         form.fields['book'].choices, success_book = get_books_for_form()
         form.fields['library'].choices, success_lib = get_libraries_for_form()
         if not success_book or not success_lib:
-            response = render(request, 'add_library_book.html', {'error': THE_OPERATION_IS_TEMPORARILY_UNAVAILABLE, 'user': data})
+            response = render(request, 'add_library_book.html',
+                              {'error': THE_OPERATION_IS_TEMPORARILY_UNAVAILABLE, 'user': data})
             response.set_cookie(key='jwt', value=session.cookies.get('jwt'), httponly=True) \
                 if is_authenticated else response.delete_cookie('jwt')
             return response
@@ -313,8 +312,8 @@ def add_library_book(request):
     if request.method == "POST":
         form = NewLibraryBook(data=request.POST)
 
-        form.fields['book'].choices = get_books_for_form()
-        form.fields['library'].choices = get_libraries_for_form()
+        form.fields['book'].choices, c = get_books_for_form()
+        form.fields['library'].choices, g = get_libraries_for_form()
 
         new_book = requests.post(
             f"{LIBRARY_URL}/{form.data['library']}/book/{form.data['book']}",
@@ -339,7 +338,8 @@ def delete_book(request):
 
         form.fields['book'].choices, success = get_books_for_form()
         if not success:
-            response = render(request, 'delete_book.html', {'error': THE_OPERATION_IS_TEMPORARILY_UNAVAILABLE, 'user': data})
+            response = render(request, 'delete_book.html',
+                              {'error': THE_OPERATION_IS_TEMPORARILY_UNAVAILABLE, 'user': data})
             response.set_cookie(key='jwt', value=session.cookies.get('jwt'), httponly=True) \
                 if is_authenticated else response.delete_cookie('jwt')
             return response
@@ -354,7 +354,7 @@ def delete_book(request):
         # if service_response.status_code != status.HTTP_204_NO_CONTENT:
         #     error = service_response.json()['message']
 
-        form.fields['book'].choices = get_books_for_form()
+        form.fields['book'].choices, c = get_books_for_form()
 
     response = render(request, 'delete_book.html', {'form': form, 'error': error, 'user': data})
     response.set_cookie(key='jwt', value=session.cookies.get('jwt'), httponly=True) \
@@ -491,7 +491,7 @@ def search_by_book_name(request):
     form_data = request.POST
     try:
         book_response = requests.get(f"{BOOK_URL}/search_by_book_name/{form_data['book_name']}",
-                                 cookies=request.COOKIES)
+                                     cookies=request.COOKIES)
     except requests.exceptions.ConnectionError:
         response = render(request, 'books.html', {'error': THE_OPERATION_IS_TEMPORARILY_UNAVAILABLE, 'user': data})
         return response
@@ -506,7 +506,7 @@ def search_by_author(request):
 
     try:
         book_response = requests.get(f"{BOOK_URL}/search_by_author/{form_data['author']}",
-                                 cookies=request.COOKIES)
+                                     cookies=request.COOKIES)
     except requests.exceptions.ConnectionError:
         response = render(request, 'books.html', {'error': THE_OPERATION_IS_TEMPORARILY_UNAVAILABLE, 'user': data})
         return response

@@ -57,7 +57,10 @@ def get_rating(request):
     try:
         rating = Rating.objects.get(user_id=user_id)
     except Rating.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        rating = Rating()
+        rating.user_id = user_id
+        rating.rating = 0
+        rating.save()
 
     serializer = RatingSerializer(rating)
     return Response(serializer.data)

@@ -101,7 +101,7 @@ def add_or_remove_library_book(request, library_id, book_id):
 @api_view(['GET'])
 def get_books(request, library_id):
     data = auth(request)
-    if data['role'] != 'admin':
+    if data is not None and data['role'] != 'admin':
         taken_book = list(TakenBook.objects.filter(user_id=data['user_id']).values_list('book_id', flat=True))
 
         books = list(LibraryBook.objects.filter(library_id=library_id).exclude(book_id__in=taken_book).values('book_id', 'count'))
@@ -124,6 +124,7 @@ def get_books(request, library_id):
 @api_view(['POST'])
 def take_book(request, library_id, book_id):
     book_info = requests.post(f"{REPORT_URL}/user/take", cookies=request.COOKIES)
+    book_info = requests.post(f"{REPORT_URL}/genre/{book_id}", cookies=request.COOKIES)
     # todo check code
 
     # find LibraryBook then check count
@@ -173,6 +174,8 @@ def get_library(request, library_id):
 @api_view(['POST'])
 def return_book(request, library_id, book_id):
     data = auth(request)
+    if data == None:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     try:
         library_book = LibraryBook.objects.get(library_id=library_id, book_id=book_id)
