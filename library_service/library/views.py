@@ -111,7 +111,7 @@ def get_books(request, library_id):
 
     book_infos = []
     for book in books:
-        service_response = requests.get(f"{BOOK_URL}/api/v1/book/{book['book_id']}")
+        service_response = requests.get(f"{BOOK_URL}/{book['book_id']}")
         if service_response.status_code == status.HTTP_404_NOT_FOUND:
             continue
         book_info = service_response.json()
@@ -216,23 +216,10 @@ def get_taken_books(request):
     books = list(TakenBook.objects.filter(user_id=user_id).values('book_id'))
     book_infos = []
     for book in books:
-        service_response = requests.get(f"{BOOK_URL}/api/v1/book/{book['book_id']}")
+        service_response = requests.get(f"{BOOK_URL}/{book['book_id']}")
         if service_response.status_code == status.HTTP_404_NOT_FOUND:
             continue
         book_info = service_response.json()
         book_infos.append(book_info)
 
-    # books = list(LibraryBook.objects.filter(library_id=library_id).values_list('book_id', flat=True))
-    # book_infos = []
-    # for book_id in books:
-    #     book = requests.get(f"{BOOK_URL}/api/v1/book/{book_id}").json()
-    #     book_infos.append(book)
-
-    # books = list(LibraryBook.objects.filter(library_id=library_id).values('book_id', 'count'))
-    # book_infos = []
-    # for book in books:
-    #     book_info = requests.get(f"{BOOK_URL}/api/v1/book/{book['book_id']}").json()
-    #     book_info['count'] = book['count']
-    #     book_infos.append(book)
-    # return Response(book_infos)
     return Response(book_infos)
