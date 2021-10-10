@@ -10,12 +10,12 @@ import requests
 
 from gateway_service.settings import JWT_KEY
 
-# LIBRARY_URL = "http://127.0.0.1:9001/api/v1/library"
-# BOOK_URL = "http://127.0.0.1:9002/api/v1/book"
-# SESSION_URL = "http://127.0.0.1:9003/api/v1/session"
-# REPORT_URL = "http://127.0.0.1:9004/api/v1/report"
-# RATING_URL = "http://127.0.0.1:9005/api/v1/rating"
-# CONTROL_URL = "http://127.0.0.1:9006/api/v1/control"
+LIBRARY_URL = "http://127.0.0.1:9001/api/v1/library"
+BOOK_URL = "http://127.0.0.1:9002/api/v1/book"
+SESSION_URL = "http://127.0.0.1:9003/api/v1/session"
+REPORT_URL = "http://127.0.0.1:9004/api/v1/report"
+RATING_URL = "http://127.0.0.1:9005/api/v1/rating"
+CONTROL_URL = "http://127.0.0.1:9006/api/v1/control"
 
 
 
