@@ -277,6 +277,9 @@ def get_books_for_form():
     if books.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR:
         success = False
 
+    if books.status_code == status.HTTP_503_SERVICE_UNAVAILABLE:
+        success = False
+
     if not success:
         return form_list, success
 
@@ -290,7 +293,8 @@ def get_libraries_for_form():
     success = True
     if libraries.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR:
         success = False
-
+    if libraries.status_code == status.HTTP_503_SERVICE_UNAVAILABLE:
+        success = False
     form_list = []
 
     if not success:
