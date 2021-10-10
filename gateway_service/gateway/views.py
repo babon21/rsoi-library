@@ -227,6 +227,9 @@ def get_authors_for_form():
         authors = requests.get(f"{BOOK_URL}/author")
     except requests.exceptions.ConnectionError:
         return form_list, False
+    if authors.status_code != status.HTTP_200_OK:
+        return form_list, False
+
     for author in authors.json():
         form_list.append((author['id'], f"{author['firstname']} {author['lastname']}"))
     return form_list, True
