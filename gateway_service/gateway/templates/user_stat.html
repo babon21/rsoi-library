@@ -6,20 +6,17 @@
         <div class="text-center">
             <h3 style="font-weight: bold">{{ title }}</h3>
         </div>
-        {% if rating %}
-            <div class="font my-4 p-2">
-                <p style="padding-left: 30px;">Рейтинг: {{ rating.rating }}</p>
-            </div>
-        {% endif %}
-        {% if control.current_count %}
-            <div class="font my-4 p-2">
-                <p style="padding-left: 30px;">Количество взятых книг: {{ control.current_count }}</p>
-            </div>
-        {% endif %}
-        {% if control.max_count %}
-            <div class="font my-4 p-2">
-                <p style="padding-left: 30px;">Максимальное количество книг: {{ control.max_count }}</p>
-            </div>
+        {% if users %}
+            {% for user in users %}
+                {% if users.count != 0 %}
+                    <div class="font my-4 p-2">
+                        <p style="padding-left: 30px;">ID Пользователя: {{ user.user_id }}</p>
+                        <p style="padding-left: 30px;">Всего взято штук: {{ user.taken_count }}</p>
+                        <p style="padding-left: 30px;">Всего просрочено: {{ user.expired_count }}</p>
+                        <p style="padding-left: 30px;">Всего вовремя вернуто: {{ user.in_time }}</p>
+                    </div>
+                {% endif %}
+            {% endfor %}
         {% endif %}
     </div>
 {% endblock %}
