@@ -35,7 +35,7 @@ def take_book(request):
     except UserMonitoring.DoesNotExist:
         monitoring = UserMonitoring()
         monitoring.user_id = user_id
-        monitoring.max_count = 3
+        monitoring.max_count = 2
         monitoring.current_count = 1
 
     monitoring.save()
